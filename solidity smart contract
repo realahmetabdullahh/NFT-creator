@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract NFTGallery is ERC721 {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
+    struct NFT {
+        string name;
+        string description;
+        string imageUri; 
+    }
+
+    mapping(uint256 => NFT) private _nfts;
+
+    constructor() ERC721("NFTGallery", "NFTG") {}
+
+    function mint(address to, string memory name, string memory description, string memory imageUri) external returns (uint256) {
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
+
+        _mint(to, newTokenId);
+        _setNFTData(newTokenId, name, description, imageUri);
+
+        return newTokenId;
+    }
+
+    function _setNFTData(uint256 tokenId, string memory name, string memory description, string memory imageUri) internal {
+        _nfts[tokenId] = NFT(name, description, imageUri);
+    }
+}
+   
+
